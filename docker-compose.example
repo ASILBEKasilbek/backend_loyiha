@@ -1,0 +1,51 @@
+version: '3'
+
+volumes:
+  postgres_data: {}
+  static_data: {}
+  media_data: {}
+
+services:
+  web: &web
+    depends_on:
+      - db
+    build: .
+    volumes:
+      - .:/app/
+      - static_data:/app/static/
+      - media_data:/app/media/
+    env_file: .env
+    ports:
+      - ${DJANGO_PORT}:${DJANGO_PORT}
+    restart: always
+
+  db:
+    image: postgres:13.4-buster
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file: .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    restart: always
+
+  redis:
+    image: redis:5.0
+    restart: always
+
+  celery_worker:
+    <<: *web
+    ports: [ ]
+    command: celery -A config worker -l INFO
+    restart: always
+
+  celery_beat:
+    <<: *web
+    ports: [ ]
+    depends_on:
+      - db
+    command: celery -A config beat -l INFO
+    restart: always

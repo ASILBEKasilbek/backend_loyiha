@@ -1,0 +1,41 @@
+version: '3'
+
+volumes:
+  postgres_data: {}
+  static_data: {}
+  media_data: {}
+
+services:
+  web:
+    container_name: ${PROJECT_NAME}_web
+    depends_on:
+      - db
+    build: .
+    volumes:
+      - .:/app/
+      - static_data:/app/static/
+      - media_data:/app/media/
+    env_file: .env
+    command: python manage.py runserver
+    ports:
+      - ${PORT}:${PORT}
+    restart: always
+
+  db:
+    image: postgres:13.4-buster
+    container_name: ${PROJECT_NAME}_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file: .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_PORT=${DB_PORT}
+    restart: always
+
+  redis:
+    container_name: ${PROJECT_NAME}_redis
+    image: redis:5.0
+    restart: always
