@@ -15,4 +15,7 @@ router.register(r'Categorys',CategoryViewSet)
 
 urlpatterns=[
     path('',include(router.urls)),
+    path('register/',RegisterView.as_view(), name='register'),
+    path('send-verification-code/', SendVerificationCodeAPIView.as_view(), name='send-verification-code'),
+    path('verify-code/', VerifyCodeAPIView.as_view(), name='verify-code'),
 ]

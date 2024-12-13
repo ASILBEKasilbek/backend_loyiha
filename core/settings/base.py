@@ -53,9 +53,13 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "drf_yasg",
     "corsheaders",
+    'rest_framework_simplejwt',
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
     ),
