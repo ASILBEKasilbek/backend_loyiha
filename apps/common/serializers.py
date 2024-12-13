@@ -1,5 +1,12 @@
 from rest_framework import serializers
 from .models import *
+
+class PhoneNumberSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(max_length=15)
+
+class VerificationCodeSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(max_length=15)
+    verification_code = serializers.CharField(max_length=6)
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser

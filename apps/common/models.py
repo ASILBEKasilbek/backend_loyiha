@@ -1,6 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+
+class UserPhoneVerification(models.Model):
+    phone_number = models.CharField(max_length=15, unique=True)
+    verification_code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.phone_number
 class CustomUser(AbstractUser):
     SELLER = 'seller'
     User = 'user'
@@ -32,7 +41,7 @@ class CustomUser(AbstractUser):
         return self.username
 
 class User(models.Model):
-    pass 
+    pass
 
 class Seller(models.Model):
     class Status(models.TextChoices):
