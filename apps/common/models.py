@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
-
+from django.contrib.postgres.fields import ArrayField
+from django.utils import timezone
 class UserPhoneVerification(models.Model):
     phone_number = models.CharField(max_length=15, unique=True)
     verification_code = models.CharField(max_length=6)
@@ -41,8 +41,17 @@ class CustomUser(AbstractUser):
         return self.username
 
 class User(models.Model):
-    pass
-
+    name=models.CharField(max_length=250, default='Unknown')
+    surname=models.CharField(max_length=250, default='Unknown')
+    father_name=models.CharField(max_length=250, default='Unknown')
+    birth_date=models.DateField(default=timezone.now)
+    GENDER_CHOICES=[
+        ('M','Male'),
+        ('F','Female'),
+    ]
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    def __str__(self):
+        return self.name
 class Seller(models.Model):
     class Status(models.TextChoices):
         NEW = 'new', 'yangi'
@@ -56,11 +65,11 @@ class Seller(models.Model):
     phone = models.CharField(max_length=15, blank=True, null=True)
     expired_date = models.DateTimeField()
     code = models.CharField(max_length=250)
-    status = models.CharField(
-        max_length=50, 
-        choices=Status.choices, 
-        default=Status.NEW
-    )
+    # status = models.CharField(
+    #     max_length=50, 
+    #     choices=Status.choices, 
+    #     default=Status.NEW
+    # )
 
     def __str__(self):
         return self.full_name

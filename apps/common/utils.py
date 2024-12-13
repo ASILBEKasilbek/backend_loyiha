@@ -5,10 +5,9 @@ def generate_verification_code():
     return str(random.randint(100000, 999999))  # 6 xonali kod
 
 def send_sms(phone_number, code):
-    # Twilio hisob ma'lumotlarini kiriting
-    account_sid = 'YOUR_TWILIO_ACCOUNT_SID'
-    auth_token = 'YOUR_TWILIO_AUTH_TOKEN'
-    twilio_phone_number = 'YOUR_TWILIO_PHONE_NUMBER'
+    account_sid = ''
+    auth_token = ''
+    twilio_phone_number = '+1 361 282 9798'
 
     client = Client(account_sid, auth_token)
     message = client.messages.create(

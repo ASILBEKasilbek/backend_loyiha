@@ -4,7 +4,6 @@ from rest_framework import viewsets,status
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import UserPhoneVerification
 from .serializers import PhoneNumberSerializer, VerificationCodeSerializer
 from .utils import generate_verification_code, send_sms
 
@@ -14,13 +13,9 @@ class SendVerificationCodeAPIView(APIView):
         if serializer.is_valid():
             phone_number = serializer.validated_data['phone_number']
             code = generate_verification_code()
-            
-            # Yangi yozuv yaratish yoki yangilash
             verification_entry, created = UserPhoneVerification.objects.get_or_create(phone_number=phone_number)
             verification_entry.verification_code = code
             verification_entry.save()
-            
-            # SMS yuborish
             send_sms(phone_number, code)
             return Response({'message': 'Verification code sent successfully!'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
