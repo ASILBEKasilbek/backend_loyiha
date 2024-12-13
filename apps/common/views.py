@@ -1,10 +1,24 @@
 from django.shortcuts import render,HttpResponse
-from .models import Seller,UserLocation,Order,OrderItems,Product,ProductImage,Category,User
-from rest_framework import viewsets
-from .serializers import SellerSerializers,UserLocationSerializers,OrderItemsSerializers,OrderSerializers,ProductSerializers,ProductImageSerializers,CategorySerializers,UserSerializers
-# Create your views here.
-def home(requests):
-    return HttpResponse('Hello world')
+from .models import *
+from rest_framework import viewsets,status
+from .serializers import *
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+class RegisterView(APIView):
+    queryset=CustomUser.objects.all()
+    serializer_class=CustomUserSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = CustomUserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                'message': 'Foydalanuvchi muvaffaqiyatli ro\'yxatdan o\'tdi',
+                'user': serializer.data
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class SellerViewSet(viewsets.ModelViewSet):
     queryset=Seller.objects.all()
     serializer_class=SellerSerializers
