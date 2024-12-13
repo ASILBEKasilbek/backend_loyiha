@@ -9,7 +9,7 @@ class Seller(models.Model):
 
     class Status(models.TextChoices):
         NEW = 'new', 'yangi',
-        MODERATION = 'Modeartion', 'Moderatsiya'
+        MODERATION = 'Moderation', 'Moderatsiya'
         COD_VERIFIED =  "cod_verified", 'kod tasdiqlangan'
 
     full_name=models.CharField(max_length=250)
@@ -33,7 +33,7 @@ class UserLocation(models.Model):
         user=models.ForeignKey(User, on_delete=models.PROTECT)
 
 class Order(models.Model):
-    class Delivery_type(models.TextChoices):
+    class DeliveryType(models.TextChoices):
         MARKET = 'market', "do'kondan"
         HOME =  "home", 'uydan'
 
@@ -41,12 +41,12 @@ class Order(models.Model):
         IN_PROCESS = 'proccess', "djarayonda "
         PAID  =  "paid", "to'langan"
 
-    delivery_type =  models.CharField(max_length=250, choices=Status)
+    delivery_type =  models.CharField(max_length=250, choices=DeliveryType.choices)
     price=models.IntegerField()
-    status=models.Choices(models.CharField(max_length=250, choices=Status))
+    status=models.CharField(max_length=250, choices=Status.choices)
 
     def __str__(self):
-        return self.price
+        return str(self.price)
 
 
 class Category(models.Model):
@@ -67,13 +67,13 @@ class Product(models.Model):
 
     name=models.CharField(max_length=250)
     author=models.CharField(max_length=250)
-    price=models.DecimalField()
+    price=models.DecimalField (max_digits=10, decimal_places=2)
     count=models.PositiveIntegerField()
     description=models.CharField(max_length=250)
-    status=models.Choices(status=models.Choices(models.CharField(max_length=250, choices=Status)))
+    status=models.CharField(max_length=250, choices=Status.choices)
     comment=models.TextField()
     category=models.ForeignKey(Category, on_delete=models.PROTECT)
-    images=models.ManyToManyField()
+    images=models.ManyToManyField(ProductImage)
 
 
 
@@ -83,6 +83,6 @@ class OrderItems(models.Model):
         count=models.PositiveIntegerField()
 
         def __str__(self):
-            return self.count
+            return str(self.count)
                                      
 
