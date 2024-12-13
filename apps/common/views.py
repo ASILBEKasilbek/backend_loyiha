@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import PhoneNumberSerializer, VerificationCodeSerializer
 from .utils import generate_verification_code, send_sms
-
+from twilio.rest import Client
 class SendVerificationCodeAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = PhoneNumberSerializer(data=request.data)

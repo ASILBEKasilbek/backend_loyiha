@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
+
+
 class UserPhoneVerification(models.Model):
     phone_number = models.CharField(max_length=15, unique=True)
     verification_code = models.CharField(max_length=6)
@@ -27,13 +29,13 @@ class CustomUser(AbstractUser):
 
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='customuser_set',  # related_name qo'shildi
+        related_name='customuser_set',  
         blank=True,
     )
 
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='customuser_permissions',  # related_name qo'shildi
+        related_name='customuser_permissions', 
         blank=True,
     )
 
@@ -65,11 +67,10 @@ class Seller(models.Model):
     phone = models.CharField(max_length=15, blank=True, null=True)
     expired_date = models.DateTimeField()
     code = models.CharField(max_length=250)
-    # status = models.CharField(
-    #     max_length=50, 
-    #     choices=Status.choices, 
-    #     default=Status.NEW
-    # )
+    status = models.CharField(
+    max_length=50, 
+    choices=Status.choices,default=Status.NEW
+    )
 
     def __str__(self):
         return self.full_name
@@ -88,9 +89,11 @@ class Order(models.Model):
         IN_PROCESS = 'process', "jarayonda"
         PAID = "paid", "to'langan"
 
-    delivery_type =  models.CharField(max_length=250, choices=Status)
+    delivery_type = models.CharField(max_length=250, choices=DeliveryType.choices)
+   
+
     price=models.IntegerField()
-    status=models.Choices(models.CharField(max_length=250, choices=Status))
+    status=models.CharField(max_length=250, choices=Status.choices)
 
     def __str__(self):
         return self.price
@@ -112,22 +115,22 @@ class Product(models.Model):
 
     name=models.CharField(max_length=250)
     author=models.CharField(max_length=250)
-    price=models.DecimalField()
+    price=models.DecimalField(max_digits=10, decimal_places=2)
     count=models.PositiveIntegerField()
     description=models.CharField(max_length=250)
-    status=models.Choices(status=models.Choices(models.CharField(max_length=250, choices=Status)))
+    status=models.CharField(max_length=250, choices=Status)
     comment=models.TextField()
     category=models.ForeignKey(Category, on_delete=models.PROTECT)
-    images=models.ManyToManyField()
+    images=models.ManyToManyField(ProductImage)
 
 
 
 class OrderItems(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order,on_delete=models.PROTECT)
     count = models.PositiveIntegerField()
 
-        def __str__(self):
-            return self.count
+    def __str__(self):
+        return str(self.count)
                                      
 
