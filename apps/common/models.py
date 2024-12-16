@@ -12,6 +12,8 @@ class UserPhoneVerification(models.Model):
 
     def __str__(self):
         return self.phone_number
+    
+
 class CustomUser(AbstractUser):
     SELLER = 'seller'
     User = 'user'
@@ -46,14 +48,17 @@ class User(models.Model):
     name=models.CharField(max_length=250, default='Unknown')
     surname=models.CharField(max_length=250, default='Unknown')
     father_name=models.CharField(max_length=250, default='Unknown')
-    birth_date=models.DateField(default=timezone.now)
+    birth_date = models.DateField(null=True, blank=True)
+
     GENDER_CHOICES=[
         ('M','Male'),
         ('F','Female'),
     ]
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+
     def __str__(self):
         return self.name
+    
 class Seller(models.Model):
     class Status(models.TextChoices):
         NEW = 'new', 'yangi',
@@ -103,7 +108,7 @@ class Category(models.Model):
     name = models.CharField(max_length=250)
 
 class ProductImage(models.Model):
-    image1 = models.ImageField()
+    image1 = models.ImageField(upload_to='images/')
 
 class Product(models.Model):
     class Status(models.TextChoices):
@@ -118,7 +123,7 @@ class Product(models.Model):
     price=models.DecimalField(max_digits=10, decimal_places=2)
     count=models.PositiveIntegerField()
     description=models.CharField(max_length=250)
-    status=models.CharField(max_length=250, choices=Status)
+    status=models.CharField(max_length=250, choices=Status.choices)
     comment=models.TextField()
     category=models.ForeignKey(Category, on_delete=models.PROTECT)
     images=models.ManyToManyField(ProductImage)

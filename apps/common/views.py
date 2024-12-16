@@ -7,6 +7,10 @@ from rest_framework.views import APIView
 from .serializers import PhoneNumberSerializer, VerificationCodeSerializer
 from .utils import generate_verification_code, send_sms
 from twilio.rest import Client
+from rest_framework import generics
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+
 class SendVerificationCodeAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = PhoneNumberSerializer(data=request.data)
@@ -75,6 +79,18 @@ class OrderItemsViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset=Product.objects.all()
     serializer_class=ProductSerializers
+
+
+# class ProductListAPIView(generics.ListAPIView):
+#     serializer_class = serializers.ProductListSerializers
+#     queryset = models.Product.objects.all()
+#     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+#     search_fields = ['name',]
+
+
+
+
+
 
 class ProductImageViewSet(viewsets.ModelViewSet):
     queryset=ProductImage.objects.all()
