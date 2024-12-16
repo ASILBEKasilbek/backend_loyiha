@@ -6,10 +6,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import PhoneNumberSerializer, VerificationCodeSerializer
 from .utils import generate_verification_code, send_sms
-from twilio.rest import Client
+# from twilio.rest import Client
 from rest_framework import generics
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class SendVerificationCodeAPIView(APIView):
     def post(self, request, *args, **kwargs):
@@ -20,7 +21,8 @@ class SendVerificationCodeAPIView(APIView):
             verification_entry, created = UserPhoneVerification.objects.get_or_create(phone_number=phone_number)
             verification_entry.verification_code = code
             verification_entry.save()
-            send_sms(phone_number, code)
+            # send_sms(phone_number, code)
+            print(code)
             return Response({'message': 'Verification code sent successfully!'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -36,7 +38,14 @@ class VerifyCodeAPIView(APIView):
                 if entry.verification_code == verification_code:
                     entry.is_verified = True
                     entry.save()
-                    return Response({'message': 'Phone number verified successfully!'}, status=status.HTTP_200_OK)
+                    user = request.user 
+
+                    refresh = RefreshToken.for_user(user)
+
+                    return Response(data={
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    })
                 else:
                     return Response({'error': 'Invalid verification code'}, status=status.HTTP_400_BAD_REQUEST)
             except UserPhoneVerification.DoesNotExist:

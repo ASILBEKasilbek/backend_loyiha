@@ -1,5 +1,5 @@
 import random
-from twilio.rest import Client
+# from twilio.rest import Client
 
 def generate_verification_code():
     return str(random.randint(100000, 999999))  # 6 xonali kod
