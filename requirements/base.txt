@@ -6,3 +6,4 @@ django-jazzmin
 drf-yasg
 djangorestframework
 django-filter
+twilio==9.4.0
