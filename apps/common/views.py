@@ -1,16 +1,51 @@
 from django.shortcuts import render,HttpResponse
 from .models import *
-from rest_framework import viewsets,status
+from rest_framework import viewsets,status,generics,filters
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import PhoneNumberSerializer, VerificationCodeSerializer
 from .utils import generate_verification_code, send_sms
 from twilio.rest import Client
-from rest_framework import generics
-from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework_simplejwt.tokens import RefreshToken
+
+class StoreListView(generics.ListCreateAPIView):
+    queryset = Store.objects.all()
+    serializer_class = StoreSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = StoreFilter
+
+class StoreView(generics.ListCreateAPIView):
+    queryset=Store.objects.all()
+    serializer_class=StoreSerializer
+    def get_queryset(self):
+        queryset=super().get_queryset()
+        name=self.request.query_params.get('name')
+        if name:
+            queryset=queryset.filter(name__icontains=name)
+        return queryset
+    
+
+class StoreDetailView(generics.RetrieveAPIView):
+    queryset=Book.objects.all()
+    serializer_class=BookSerializer
+
+
+
+
+
+
+
+
+
+
+class BookView(generics.ListCreateAPIView):
+    serializer_class=BookSerializer
+    def get_queryset(self):
+        store_id=self.kwargs['store_id']
+        return Book.objects.filter(store_id=store_id)
+
 
 class SendVerificationCodeAPIView(APIView):
     def post(self, request, *args, **kwargs):

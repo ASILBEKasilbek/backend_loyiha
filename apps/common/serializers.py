@@ -1,5 +1,23 @@
 from rest_framework import serializers
 from .models import *
+import django_filters
+
+class StoreFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='icontains')
+    address = django_filters.CharFilter(lookup_expr='icontains')  
+    class Meta:
+        model=Store
+        fields=['name','address']
+
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Book
+        fields='__all__'
+class StoreSerializer(serializers.ModelSerializer):
+    book_set=BookSerializer(many=True,read_only=True)
+    class Meta:
+        model=Store
+        fields='__all__'
 
 class PhoneNumberSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=15)

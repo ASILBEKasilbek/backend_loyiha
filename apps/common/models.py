@@ -3,6 +3,32 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 
+class Store(models.Model):
+    name=models.CharField(max_length=250)
+    image=models.ImageField(upload_to='store/images/',blank=True,null=True)
+    def __str__(self):
+        return self.name
+
+
+class Book(models.Model):
+    TYPE_CHOICES=[
+        ('R','Roman'),
+        ('Q','Qissa'),
+        ('H','Hikoya')
+    ]
+    store=models.ForeignKey(Store,related_name='books',on_delete=models.CASCADE)
+    title=models.CharField(max_length=250)
+    description=models.TextField()
+    author=models.CharField(max_length=250)
+    image=models.ImageField(upload_to='store/images/',blank=True,null=True)
+    hajmi=models.IntegerField(default=0)
+    category=models.CharField(max_length=1,choices=TYPE_CHOICES,default='R')
+    turi=models.CharField(max_length=250,default='roman')
+    price=models.DecimalField(max_digits=10,decimal_places=2)
+    def __str__(self):
+        return self.title
+
+
 
 class UserPhoneVerification(models.Model):
     phone_number = models.CharField(max_length=15, unique=True)
@@ -72,10 +98,10 @@ class Seller(models.Model):
     phone = models.CharField(max_length=15, blank=True, null=True)
     expired_date = models.DateTimeField()
     code = models.CharField(max_length=250)
-    status = models.CharField(
-    max_length=50, 
-    choices=Status.choices,default=Status.NEW
-    )
+    # status = models.CharField(
+    # max_length=50, 
+    # choices=Status.choices,default=Status.NEW
+    # )
 
     def __str__(self):
         return self.full_name

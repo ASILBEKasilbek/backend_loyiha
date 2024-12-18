@@ -40,7 +40,8 @@ class UserLocation(admin.ModelAdmin):
 
 
 admin.site.register(ProductImage)
-
+admin.site.register(Book)
+admin.site.register(Store)
 
 @admin.register(Category)
 class UserLocation(admin.ModelAdmin):
